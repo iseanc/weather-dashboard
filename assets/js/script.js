@@ -36,6 +36,15 @@ function getCoordinatesFromCity () {
 function populateSearchResults() {
 
 }
+
+function loadSearchHistory() {
+
+}
+
+function onPageLoad() {
+
+}
+
 // EVENT LISTENERS
 
 searchButton.addEventListener('click', getWeather);
