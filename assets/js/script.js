@@ -11,31 +11,65 @@ var searchResultsEl = document.getElementById('search-results');
 // - latitude/longitude (USE Geocoding API)
 // API Key
 var openWeatherAPIKey = 'bef67c23617c7d859347627ed38b8308';
-var searchCity ="";
-var lat = 32.248814;
-var lon = -110.987419;
-var searchStartDate;
-var requestUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + openWeatherAPIKey;
+
+// Use for Direct Geocode lookup
+// Geocoding API request URL FORMAT: http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
+var locCity = 'Tucson';  // city name
+var locState = ''; // state code
+var locCountry = 'au'; // country code
+var locNumRecords = 5; 
+var directGeocodeUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + locCity + ',' + locState + ',' + locCountry + '&limit=' + locNumRecords + '&appid=' + openWeatherAPIKey
+
+//console.log(directGeocodeUrl);
+
+var lat = 0;
+var lon = 0;
+var units = 'imperial';
+
+// var requestUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + openWeatherAPIKey + '&units=' + units + '&cnt=9';
+
 var searchHistory = [];
 var searchResults;
+var weatherIcon;
+var weatherIconUrl = 'http://openweathermap.org/img/wn/' + weatherIcon + '@2x.png';
+
+
 
 // FUNCTIONS
 
-function getWeather2(RequestUrl) {
+// Extract coordinates from Geocoding API "direct geocode lookup" result
 
-  fetch(RequestUrl)
+function getCoordinates(gcr) {
+  if (gcr.length === 0) {
+    alert('No results found for search criteria: ' + (locCity + ' ' + locState + ' ' + locCountry).trim());
+  } else if (gcr.length > 1) {
+    alert('Multiple results found for search criteria: ' + (locCity + ' ' + locState + ' ' + locCountry).trim() + '.\n Try entering a City Name, State Code, County Code');
+  }
+  else {
+    //console.log("found 1 result: ", gcr[0].name, gcr[0].state, gcr[0].country);
+    lat = gcr[0].lat; 
+    lon = gcr[0].lon;
+  }
+}
+
+// Fetch latitude/longitude coordinates from City/Zip/Postal info
+// NOTE: Only City lookup is supported at this time
+function fetchCoordinatesFromCity(directGeocodeUrl) {
+  
+  fetch(directGeocodeUrl)
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
-      for (var i = 0; i < data.length; i++) {
-        
-      }
+      var geocodeResults = data;
+      getCoordinates(geocodeResults);
+      console.log("fcfc", lat, lon);
     })
 }
 
-function getWeather(RequestUrl) {
+// fetchCoordinatesFromCity(directGeocodeUrl);
+
+function fetchWeather(RequestUrl) {
 
   fetch(RequestUrl)
     .then(function (response) {
@@ -60,15 +94,10 @@ function getWeather(RequestUrl) {
     });
 }
 
-//console.log(getWeather(requestUrl));
-getWeather(requestUrl);
+//console.log(fetchWeather(requestUrl));
+//fetchWeather(requestUrl);
 
 function updateSearchHistory() {
-
-}
-
-// Get Latitude and Longitude from City name
-function getCoordinatesFromCity () {
 
 }
 
@@ -83,7 +112,16 @@ function loadSearchHistory() {
 function onPageLoad() {
 
 }
+console.log ("lat= " + lat, "lon= "  + lon);
+function getWeather() {
+  fetchCoordinatesFromCity(directGeocodeUrl);
+  console.log ("lat= " + lat, "lon= "  + lon);
+  var requestUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + openWeatherAPIKey + '&units=' + units + '&cnt=9';
 
+  fetchWeather(requestUrl);
+}
+
+getWeather()
 // EVENT LISTENERS
 
-//searchButton.addEventListener('click', getWeather);
+//searchButton.addEventListener('click', fetchWeather);
