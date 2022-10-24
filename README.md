@@ -32,6 +32,7 @@ If your README is long, add a table of contents to make it easy for users to fin
 
 Instructions and examples for use.
 - To initiate a search, enter "city name, state code, country code" (without quotations). 
+- 2-letter country codes are available in [ISO 3166 database](https://www.iso.org/obp/ui/#search)
 - You can also select a previously selected city from your search history to retrieve updated weather forecasts for those locations.
 
 NOTES:
