@@ -51,6 +51,7 @@ function getCoordinates(gcr) {
     );
   // If there are multiple results returned
   } else if (gcr.length > 1) {
+    console.log(gcr)
     alert(
       "Multiple results found for search criteria: " +
         (locCity + " " + locState + " " + locCountry).trim() +
@@ -62,14 +63,19 @@ function getCoordinates(gcr) {
       "Fetching coordinates did not return valid latitude or longitude.\n Enter a valid City Name.  Include State Code and Country Code to limit search response to a single result."
     );
   } else {
-    // console.log("gcr: getCoordinates", gcr);
+    console.log("gcr: getCoordinates", gcr);
+    // log City info to search history
     updateSearchHistory(gcr);
     lat = gcr[0].lat;
     lon = gcr[0].lon;
+
     // setup request URL for fetching weather
     var requestUrl =
-      "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" +
-      lon + "&appid=" + openWeatherAPIKey + "&units=" + units + "&cnt=" + count;
+      "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat
+       + "&lon=" + lon 
+       + "&appid=" + openWeatherAPIKey 
+       + "&units=" + units 
+       + "&cnt=" + count;
     // call fetchWeather
     fetchWeather(requestUrl);
   }
@@ -139,11 +145,15 @@ function fetchWeather(RequestUrl) {
 
 function updateSearchHistory(gcr) {
   if (Object.hasOwn(gcr[0],"name")) {
-    searchHistory.push({city: gcr[0].name, state: gcr[0].state, country: gcr[0].country, lat: gcr[0].lat, lon: gcr[0].lon});
+    searchHistory.push({
+        city: gcr[0].name, 
+        state: gcr[0].state, 
+        country: gcr[0].country, 
+        lat: gcr[0].lat, 
+        lon: gcr[0].lon});
     console.log("searchHist", searchHistory);
     localStorage.setItem("weatherSearchHistory", JSON.stringify(searchHistory));
   }
-  
 }
 
 function populateSearchResults() {}
@@ -206,4 +216,4 @@ searchButtonEl.addEventListener("click", function (event) {
 });
 
 onPageLoad();
-console.log(searchHistory);
+console.log("srchhist", searchHistory);
