@@ -15,7 +15,7 @@ var DateTime = luxon.DateTime;
 var openWeatherAPIKey = "bef67c23617c7d859347627ed38b8308";
 
 // Use for Direct Geocode lookup
-// URL FORMAT: http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
+// URL FORMAT: https://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
 var locCity = ""; // city name
 var locState = ""; // state code
 var locCountry = ""; // country code
@@ -36,7 +36,7 @@ var searchResults; // temp storage for weather search results
 var weatherSubset;
 // var weatherIcon;
 // var weatherIconUrl =
-//   "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
+//   "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
 
 // *******************************
 // FUNCTIONS
@@ -190,7 +190,7 @@ function displayWeather(weather) {
     wiIcon.setAttribute("class", "image is-48x48");
     var weatherIcon = wl[i].icon;
     var weatherIconUrl =
-    "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
+    "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
     wiIcon.src = weatherIconUrl;
     // temperature      = list[0].main.temp (F)
     var wiTemp = document.createElement('p');
@@ -271,7 +271,7 @@ function parseSearchText(searchString) {
     locCountry = words[2];
   }
   var directGeocodeUrl =
-  "http://api.openweathermap.org/geo/1.0/direct?q=" + locCity + "," + locState + "," + locCountry + "&limit=" + locNumRecords + "&appid=" + openWeatherAPIKey;
+  "https://api.openweathermap.org/geo/1.0/direct?q=" + locCity + "," + locState + "," + locCountry + "&limit=" + locNumRecords + "&appid=" + openWeatherAPIKey;
 
   fetchCoordinatesFromCity(directGeocodeUrl);
 }
