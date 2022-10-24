@@ -25,11 +25,19 @@ If your README is long, add a table of contents to make it easy for users to fin
 
 ## Installation
 
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
+[View my deployed Weather Dashboard](https://iseanc.github.io/weather-dashboard/)
 
 ## Usage
 
-Provide instructions and examples for use. Include screenshots as needed.
+Instructions and examples for use.
+- To initiate a search, enter "city name, state code, country code" (without quotations). 
+- You can also select a previously selected city from your search history to retrieve updated weather forecasts for those locations.
+
+NOTES:
+- If you only enter a city name, it is likely the OpenWeather API will not find a location, or it will return multiple locations.  In it's current form, the application only retrieves information when only one location match is identified.
+- The City name displayed in the Weather results may be different than the name you entered in the Search field.  This is because the Weather forecast display is using the City name returned in the forecast results for the Latitude/Longitude coordinates identified in the original City search.
+
+
 
 To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
 
@@ -39,19 +47,12 @@ To add a screenshot, create an `assets/images` folder in your repository and upl
 
 ## Credits
 
-List your collaborators, if any, with links to their GitHub profiles.
-
-If you used any third-party assets that require attribution, list the creators with links to their primary web presence in this section.
-
-If you followed tutorials, include links to those here as well.
+I rely on heavily on [StackOverflow](https://stackoverflow.com/) posts to obtain guidance on solving the myriad problems I encounter while coding.
 
 ## License
 
-The last section of a high-quality README file is the license. This lets other developers know what they can and cannot do with your project. If you need help choosing a license, refer to [https://choosealicense.com/](https://choosealicense.com/).
+[MIT License](LICENSE/).
 
----
-
-🏆 The previous sections are the bare minimum, and your project will ultimately determine the content of this document. You might also want to consider adding the following sections.
 
 ## Badges
 
@@ -61,11 +62,11 @@ Badges aren't necessary, per se, but they demonstrate street cred. Badges let ot
 
 ## Features
 
-If your project has a lot of features, list them here.
+- Weather forecast for 5 days (including current date).  The application currently shows one time period for each day, around 5 PM (the hottest part of the day).
+- Previous search locations are stored on the local client device, and search history should display when the page loads.  Click any history entry to retrieve a current forecast for the location.
+- New search locations should only be added to Search History if they have resulted in a valid Geocode Location response from OpenWeather.org.
+- Various error messages are displayed for different situations, especially for the following: no data entered in search bar; no location results, or multiple location results returned from the lookup; web-site connectivity issues; and invalid data retrieval.
 
-## How to Contribute
-
-If you created an application or package and would like other developers to contribute it, you can include guidelines for how to do so. The [Contributor Covenant](https://www.contributor-covenant.org/) is an industry standard, but you can always write your own if you'd prefer.
 
 ## Tests
 
