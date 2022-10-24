@@ -6,6 +6,7 @@ var searchButtonEl = document.getElementById("search-button");
 var searchHistoryEl = document.getElementById("search-history");
 var searchHistoryUl = document.getElementById("search-history-list");
 var searchResultsEl = document.getElementById("search-results");
+var searchResultsMainEl = document.getElementById("results-main");
 
 // JS variables
 var DateTime = luxon.DateTime;
@@ -32,9 +33,10 @@ var count = 40;
 
 var searchHistory = []; // search history array for temp storage
 var searchResults; // temp storage for weather search results
-var weatherIcon;
-var weatherIconUrl =
-  "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
+var weatherSubset;
+// var weatherIcon;
+// var weatherIconUrl =
+//   "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
 
 // *******************************
 // FUNCTIONS
@@ -131,6 +133,7 @@ function fetchWeather(RequestUrl) {
           weatherSubset = {city: weatherSubset.city, country: weatherSubset.country, list: weatherSubset.list.map(function(item){return {dt_txt: item.dt_txt, icon: item.weather[0].icon, humid: item.main.humidity + " %", temp: Math.round(item.main.temp) + " F", wind: item.wind.speed + " MPH"} }) }
 
           console.log("weatherSubset", weatherSubset);
+          displayWeather(weatherSubset);
         });
       } else {
         alert("Error: " + response.statusText);
@@ -152,12 +155,70 @@ function updateSearchHistory(gcr) {
     console.log("searchHist", searchHistory);
     localStorage.setItem("weatherSearchHistory", JSON.stringify(searchHistory));
   }
-  // displaySearchHistory();
+  loadSearchHistory();
+  displaySearchHistory();
 }
 
-function displaySearchResults() {}
+function displayWeather(weather) {
+  console.log("USH:Weather", weather);
+
+  // clear the current search results container
+  // weatherSubset
+  while (searchResultsMainEl.firstChild) {
+    searchResultsMainEl.removeChild(searchResultsMainEl.firstChild);
+  }
+
+  console.log("weatherList", weather.list);
+  console.log("weatherList_0", weather.list[0]);
+  var wl = weather.list;
+  // Add header indicating main location
+  var resultCity = document.createElement("h2");
+  resultCity.innerHTML = weather.city + ", " + weather.country;
+  searchResultsMainEl.appendChild(resultCity);
+
+  for (var i = 0; i < wl.length; i++) {
+    console.log("wli", wl[i]);
+
+    // daily weather container
+    var wiDayEl = document.createElement("div"); 
+    wiDayEl.setAttribute("class", "has-background-primary-light mt-2")
+    // header for date + date info (formatted)
+    var wiDate = document.createElement("h4");   
+    wiDate.textContent = DateTime.fromFormat(wl[i].dt_txt,"yyyy-LL-dd HH:mm:ss", {zone: "utc"}).toLocal().toLocaleString(DateTime.DATETIME_SHORT);
+    // icon of weather  = list[0].weather[0].icon
+    var wiIcon = document.createElement('img');
+    wiIcon.setAttribute("class", "image is-48x48");
+    var weatherIcon = wl[i].icon;
+    var weatherIconUrl =
+    "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
+    wiIcon.src = weatherIconUrl;
+    // temperature      = list[0].main.temp (F)
+    var wiTemp = document.createElement('p');
+    wiTemp.textContent = wl[i].temp;
+    // humidity         = list[0].main.humidity (%)
+    var wiHumidity = document.createElement('p');
+    wiHumidity.textContent = wl[i].humid;
+    // wind speed       = list[i].wind.speed (mph)
+    var wiWind = document.createElement('p');
+    wiWind.textContent = wl[i].wind
+    
+    
+    // append date-specific weather elements to Day container
+    // wiDayEl.appendChild(wiDate);
+    wiDayEl.append(wiDate, wiIcon, wiTemp, wiHumidity, wiWind);
+
+    // append Day container to search results parent element
+    searchResultsMainEl.appendChild(wiDayEl);
+  }
+
+}
 
 function displaySearchHistory() {
+
+  while (searchHistoryUl.firstChild) {
+    searchHistoryUl.removeChild(searchHistoryUl.firstChild);
+  }
+  
   for (var i = 0; i < searchHistory.length; i++) {
 
       var searchItem = searchHistory[i];
@@ -169,7 +230,6 @@ function displaySearchHistory() {
       li.setAttribute("data-index", i);
       li.setAttribute("data-lat", searchItem.lat );
       li.setAttribute("data-lon", searchItem.lon );
-      li.style.border
 
       searchHistoryUl.appendChild(li);
   }
