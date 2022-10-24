@@ -12,7 +12,7 @@ Provide a short description explaining the what, why, and how of your project. U
 
 This program uses the [OpenWeather.org 5 Day/3 Hour API](https://openweathermap.org/forecast5) to obtain a 5-day weather forecast for a specified city (city, state, country).  Potential travelers to the location, and other interest parties, can get an idea of the current and upcoming weather conditions.
 
-The application extends previously learned web-development concepts with client-server communication using HTTP GET calls. 
+The application extends previously learned web-development concepts with client-server communication using HTTP GET calls.  This application uses the 'Luxon.js' library for date/time data, instead of 'Moment.js'.
 
 ## Table of Contents (Optional)
 
@@ -21,15 +21,24 @@ If your README is long, add a table of contents to make it easy for users to fin
 - [Installation](#installation)
 - [Usage](#usage)
 - [Credits](#credits)
+- [Features](#features)
 - [License](#license)
 
 ## Installation
 
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
+[View my deployed Weather Dashboard](https://iseanc.github.io/weather-dashboard/)
 
 ## Usage
 
-Provide instructions and examples for use. Include screenshots as needed.
+Instructions and examples for use.
+- To initiate a search, enter "city name, state code, country code" (without quotations). 
+- You can also select a previously selected city from your search history to retrieve updated weather forecasts for those locations.
+
+NOTES:
+- If you only enter a city name, it is likely the OpenWeather API will not find a location, or it will return multiple locations.  In it's current form, the application only retrieves information when only one location match is identified.
+- The City name displayed in the Weather results may be different than the name you entered in the Search field.  This is because the Weather forecast display is using the City name returned in the forecast results for the Latitude/Longitude coordinates identified in the original City search.
+
+
 
 To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
 
@@ -39,34 +48,20 @@ To add a screenshot, create an `assets/images` folder in your repository and upl
 
 ## Credits
 
-List your collaborators, if any, with links to their GitHub profiles.
-
-If you used any third-party assets that require attribution, list the creators with links to their primary web presence in this section.
-
-If you followed tutorials, include links to those here as well.
-
-## License
-
-The last section of a high-quality README file is the license. This lets other developers know what they can and cannot do with your project. If you need help choosing a license, refer to [https://choosealicense.com/](https://choosealicense.com/).
-
----
-
-🏆 The previous sections are the bare minimum, and your project will ultimately determine the content of this document. You might also want to consider adding the following sections.
-
-## Badges
-
-![badmath](https://img.shields.io/github/languages/top/lernantino/badmath)
-
-Badges aren't necessary, per se, but they demonstrate street cred. Badges let other developers know that you know what you're doing. Check out the badges hosted by [shields.io](https://shields.io/). You may not understand what they all represent now, but you will in time.
+I rely on heavily on [StackOverflow](https://stackoverflow.com/) posts to obtain guidance on solving the myriad problems I encounter while coding.
 
 ## Features
 
-If your project has a lot of features, list them here.
+- Weather forecast for 5 days (including current date).  The application currently shows one time period for each day, around 5 PM (the hottest part of the day).
+- Previous search locations are stored on the local client device, and search history should display when the page loads.  Click any history entry to retrieve a current forecast for the location.
+- New search locations should only be added to Search History if they have resulted in a valid Geocode Location response from OpenWeather.org.
+- Various error messages are displayed for different situations, especially for the following: no data entered in search bar; no location results, or multiple location results returned from the lookup; web-site connectivity issues; and invalid data retrieval.
 
-## How to Contribute
+KNOWN ISSUES:
+- Some location searches may return multiple results in the initial City search.  Currently there is no ability to display the list to allow the user to choose from one of the locations.  
+- To ensure only a single location result, users must enter a valid city name, state code (2 character), country code (2 character) combination.
+- The city name displayed in the Weather Forecast may be different from the city name entered in the Search field.  This is because we are using the City name returned in the secondary weather lookup.  This city name may be slightly or completely different than what the user entered.
 
-If you created an application or package and would like other developers to contribute it, you can include guidelines for how to do so. The [Contributor Covenant](https://www.contributor-covenant.org/) is an industry standard, but you can always write your own if you'd prefer.
+## License
 
-## Tests
-
-Go the extra mile and write tests for your application. Then provide examples on how to run them here.
+[MIT License](LICENSE/).
