@@ -10,6 +10,10 @@ Provide a short description explaining the what, why, and how of your project. U
 - What problem does it solve?
 - What did you learn?
 
+This program uses the [OpenWeather.org 5 Day/3 Hour API](https://openweathermap.org/forecast5) to obtain a 5-day weather forecast for a specified city (city, state, country).  Potential travelers to the location, and other interest parties, can get an idea of the current and upcoming weather conditions.
+
+The application extends previously learned web-development concepts with client-server communication using HTTP GET calls. 
+
 ## Table of Contents (Optional)
 
 If your README is long, add a table of contents to make it easy for users to find what they need.
