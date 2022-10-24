@@ -9,31 +9,29 @@ var searchResultsEl = document.getElementById("search-results");
 
 // JS variables
 var DateTime = luxon.DateTime;
-// URL FORMAT api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
-// TEST: api.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=bef67c23617c7d859347627ed38b8308
-// NEED:
-// - latitude/longitude (USE Geocoding API)
+
 // API Key
 var openWeatherAPIKey = "bef67c23617c7d859347627ed38b8308";
 
 // Use for Direct Geocode lookup
-// Geocoding API request URL FORMAT: http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
+// URL FORMAT: http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
 var locCity = ""; // city name
 var locState = ""; // state code
 var locCountry = ""; // country code
 var locNumRecords = 5; // default = 5. 
-// var directGeocodeUrl =
-//   "http://api.openweathermap.org/geo/1.0/direct?q=" + locCity + "," + locState + "," + locCountry + "&limit=" + locNumRecords + "&appid=" + openWeatherAPIKey;
 
+// URL FORMAT api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
+// TEST: api.openweathermap.org/data/2.5/forecast?lat=0&lon=0&appid=bef67c23617c7d859347627ed38b8308
+// var requestUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + openWeatherAPIKey + '&units=' + units + '&cnt=' + count;
+
+// args for weather fetch requestUrl
 var lat = 0;
 var lon = 0;
 var units = "imperial";
 var count = 40;
 
-// var requestUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=' + openWeatherAPIKey + '&units=' + units + '&cnt=' + count;
-
-var searchHistory = [];
-var searchResults;
+var searchHistory = []; // search history array for temp storage
+var searchResults; // temp storage for weather search results
 var weatherIcon;
 var weatherIconUrl =
   "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
@@ -154,9 +152,28 @@ function updateSearchHistory(gcr) {
     console.log("searchHist", searchHistory);
     localStorage.setItem("weatherSearchHistory", JSON.stringify(searchHistory));
   }
+  // displaySearchHistory();
 }
 
-function populateSearchResults() {}
+function displaySearchResults() {}
+
+function displaySearchHistory() {
+  for (var i = 0; i < searchHistory.length; i++) {
+
+      var searchItem = searchHistory[i];
+      console.log("searchItem", searchItem.city);
+
+      var li = document.createElement("li");
+      li.textContent = searchItem.city + ", " + searchItem.state + ", " + searchItem.country;
+      li.setAttribute("class", "search-hist-item button");
+      li.setAttribute("data-index", i);
+      li.setAttribute("data-lat", searchItem.lat );
+      li.setAttribute("data-lon", searchItem.lon );
+      li.style.border
+
+      searchHistoryUl.appendChild(li);
+  }
+}
 
 function loadSearchHistory() {
   // Get stored search history from localStorage
@@ -170,6 +187,7 @@ function loadSearchHistory() {
 
 function onPageLoad() {
   loadSearchHistory()
+  displaySearchHistory()
 }
 
 function parseSearchText(searchString) {
@@ -216,4 +234,3 @@ searchButtonEl.addEventListener("click", function (event) {
 });
 
 onPageLoad();
-console.log("srchhist", searchHistory);
