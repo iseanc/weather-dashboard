@@ -115,7 +115,7 @@ function fetchWeather(RequestUrl) {
           weatherSubset = filterResults(searchResults);
           console.log("myUnwrap", myUnwrap);
 
-          weatherSubset = {city: myUnwrap.city, list: myUnwrap.list.map(function(item){return {dt_txt: item.dt_txt, icon: item.weather[0].icon, humid: item.main.humidity + "%", temp: Math.round(item.main.temp) + "F", wind: item.wind.speed + " mph"} }) }
+          weatherSubset = {city: myUnwrap.city, list: myUnwrap.list.map(function(item){return {dt_txt: item.dt_txt, icon: item.weather[0].icon, humid: item.main.humidity + " %", temp: Math.round(item.main.temp) + " F", wind: item.wind.speed + " MPH"} }) }
 
           console.log("myUnwrapSubset", myUnwrapSubset);
         });
