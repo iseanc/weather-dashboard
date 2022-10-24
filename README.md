@@ -12,7 +12,7 @@ Provide a short description explaining the what, why, and how of your project. U
 
 This program uses the [OpenWeather.org 5 Day/3 Hour API](https://openweathermap.org/forecast5) to obtain a 5-day weather forecast for a specified city (city, state, country).  Potential travelers to the location, and other interest parties, can get an idea of the current and upcoming weather conditions.
 
-The application extends previously learned web-development concepts with client-server communication using HTTP GET calls. 
+The application extends previously learned web-development concepts with client-server communication using HTTP GET calls.  This application uses the 'Luxon.js' library for date/time data, instead of 'Moment.js'.
 
 ## Table of Contents (Optional)
 
@@ -21,6 +21,7 @@ If your README is long, add a table of contents to make it easy for users to fin
 - [Installation](#installation)
 - [Usage](#usage)
 - [Credits](#credits)
+- [Features](#features)
 - [License](#license)
 
 ## Installation
@@ -49,17 +50,6 @@ To add a screenshot, create an `assets/images` folder in your repository and upl
 
 I rely on heavily on [StackOverflow](https://stackoverflow.com/) posts to obtain guidance on solving the myriad problems I encounter while coding.
 
-## License
-
-[MIT License](LICENSE/).
-
-
-## Badges
-
-![badmath](https://img.shields.io/github/languages/top/lernantino/badmath)
-
-Badges aren't necessary, per se, but they demonstrate street cred. Badges let other developers know that you know what you're doing. Check out the badges hosted by [shields.io](https://shields.io/). You may not understand what they all represent now, but you will in time.
-
 ## Features
 
 - Weather forecast for 5 days (including current date).  The application currently shows one time period for each day, around 5 PM (the hottest part of the day).
@@ -67,7 +57,11 @@ Badges aren't necessary, per se, but they demonstrate street cred. Badges let ot
 - New search locations should only be added to Search History if they have resulted in a valid Geocode Location response from OpenWeather.org.
 - Various error messages are displayed for different situations, especially for the following: no data entered in search bar; no location results, or multiple location results returned from the lookup; web-site connectivity issues; and invalid data retrieval.
 
+KNOWN ISSUES:
+- Some location searches may return multiple results in the initial City search.  Currently there is no ability to display the list to allow the user to choose from one of the locations.  
+- To ensure only a single location result, users must enter a valid city name, state code (2 character), country code (2 character) combination.
+- The city name displayed in the Weather Forecast may be different from the city name entered in the Search field.  This is because we are using the City name returned in the secondary weather lookup.  This city name may be slightly or completely different than what the user entered.
 
-## Tests
+## License
 
-Go the extra mile and write tests for your application. Then provide examples on how to run them here.
+[MIT License](LICENSE/).
