@@ -1,9 +1,11 @@
 // HTML Elements
 var searchMenuEl = document.getElementById("search-menu");
 var searchNewEl = document.getElementById("search-new");
-var searchHistoryEl = document.getElementById("search-history");
-var searchResultsEl = document.getElementById("search-results");
+var searchCityEl = document.getElementById("city-name");
 var searchButtonEl = document.getElementById("search-button");
+var searchHistoryEl = document.getElementById("search-history");
+var searchHistoryUl = document.getElementById("search-history-list");
+var searchResultsEl = document.getElementById("search-results");
 
 // JS variables
 var DateTime = luxon.DateTime;
@@ -16,12 +18,12 @@ var openWeatherAPIKey = "bef67c23617c7d859347627ed38b8308";
 
 // Use for Direct Geocode lookup
 // Geocoding API request URL FORMAT: http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-var locCity = "Tucson"; // city name
-var locState = "AZ"; // state code
-var locCountry = "US"; // country code
+var locCity = ""; // city name
+var locState = ""; // state code
+var locCountry = ""; // country code
 var locNumRecords = 5; // default = 5. 
-var directGeocodeUrl =
-  "http://api.openweathermap.org/geo/1.0/direct?q=" + locCity + "," + locState + "," + locCountry + "&limit=" + locNumRecords + "&appid=" + openWeatherAPIKey;
+// var directGeocodeUrl =
+//   "http://api.openweathermap.org/geo/1.0/direct?q=" + locCity + "," + locState + "," + locCountry + "&limit=" + locNumRecords + "&appid=" + openWeatherAPIKey;
 
 var lat = 0;
 var lon = 0;
@@ -35,9 +37,6 @@ var searchResults;
 var weatherIcon;
 var weatherIconUrl =
   "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
-
-  var myUnwrap;
-  var myUnwrapSubset;
 
 // *******************************
 // FUNCTIONS
@@ -58,7 +57,13 @@ function getCoordinates(gcr) {
         ".\n Try entering a City Name, State Code, County Code"
     );
   // otherwise, store latitude/longitude values
+  } else if (!gcr[0].lat || !gcr[0].lon) {
+    alert(
+      "Fetching coordinates did not return valid latitude or longitude.\n Enter a valid City Name.  Include State Code and Country Code to limit search response to a single result."
+    );
   } else {
+    // console.log("gcr: getCoordinates", gcr);
+    updateSearchHistory(gcr);
     lat = gcr[0].lat;
     lon = gcr[0].lon;
     // setup request URL for fetching weather
@@ -73,11 +78,16 @@ function getCoordinates(gcr) {
 // Fetch latitude/longitude coordinates from City/Zip/Postal info
 // NOTE: Only City lookup is supported at this time
 function fetchCoordinatesFromCity(directGeocodeUrl) {
+
   // Initiate webserver call
   fetch(directGeocodeUrl)
     .then(function (response) {
-      // convert results to JSON
-      return response.json();
+      if (response.ok) {
+        // convert results to JSON
+        return response.json();
+      } else {
+        alert("Error: " + response.statusText + ". Please enter a valid city name.\nInclude state code and country code to narrow the results.");
+      }
     })
     .then(function (data) {
       var geocodeResults = data;
@@ -113,11 +123,10 @@ function fetchWeather(RequestUrl) {
           }
           // Second filter on weather list for subset of required fields
           weatherSubset = filterResults(searchResults);
-          console.log("myUnwrap", myUnwrap);
 
-          weatherSubset = {city: myUnwrap.city, list: myUnwrap.list.map(function(item){return {dt_txt: item.dt_txt, icon: item.weather[0].icon, humid: item.main.humidity + " %", temp: Math.round(item.main.temp) + " F", wind: item.wind.speed + " MPH"} }) }
+          weatherSubset = {city: weatherSubset.city, country: weatherSubset.country, list: weatherSubset.list.map(function(item){return {dt_txt: item.dt_txt, icon: item.weather[0].icon, humid: item.main.humidity + " %", temp: Math.round(item.main.temp) + " F", wind: item.wind.speed + " MPH"} }) }
 
-          console.log("myUnwrapSubset", myUnwrapSubset);
+          console.log("weatherSubset", weatherSubset);
         });
       } else {
         alert("Error: " + response.statusText);
@@ -128,22 +137,73 @@ function fetchWeather(RequestUrl) {
     });
 }
 
-function updateSearchHistory() {}
+function updateSearchHistory(gcr) {
+  if (Object.hasOwn(gcr[0],"name")) {
+    searchHistory.push({city: gcr[0].name, state: gcr[0].state, country: gcr[0].country, lat: gcr[0].lat, lon: gcr[0].lon});
+    console.log("searchHist", searchHistory);
+    localStorage.setItem("weatherSearchHistory", JSON.stringify(searchHistory));
+  }
+  
+}
 
 function populateSearchResults() {}
 
-function loadSearchHistory() {}
+function loadSearchHistory() {
+  // Get stored search history from localStorage
+  var storedSearchHistory = JSON.parse(localStorage.getItem("weatherSearchHistory"));
 
-function onPageLoad() {}
+  // If search history was retrieved from localStorage, update searchHistory array
+  if (storedSearchHistory !== null) {
+    searchHistory = storedSearchHistory;
+  }
+}
 
-function getWeather() {
+function onPageLoad() {
+  loadSearchHistory()
+}
+
+function parseSearchText(searchString) {
+  var words = searchString.split(',');
+  for (var i = 0; i < words.length; i++) {
+    words[i] = words[i].trim();
+  }
+
+  if (words[0] == "") { 
+    alert('You must enter a city name.\nSearch cannot begin with a comma.')
+    searchCityEl.value = "";
+    return;
+  } else { 
+    locCity = words[0];
+  }
+  if (words[1] == "" && words[2] == "") { /* do nothing */}
+  if (words[1] !== "") {
+    locState = words[1];
+  }
+  if (words[2] !== "") {
+    locCountry = words[2];
+  }
+  var directGeocodeUrl =
+  "http://api.openweathermap.org/geo/1.0/direct?q=" + locCity + "," + locState + "," + locCountry + "&limit=" + locNumRecords + "&appid=" + openWeatherAPIKey;
+
   fetchCoordinatesFromCity(directGeocodeUrl);
 }
 
 // EVENT LISTENERS
 
 searchButtonEl.addEventListener("click", function (event) {
+
   event.preventDefault();
   event.stopPropagation();
-  getWeather();
+
+  var searchString = searchCityEl.value;
+
+  if (searchString === "") {
+    alert("You must provide a search value.")
+  } else {
+    parseSearchText(searchString);
+  }
+
 });
+
+onPageLoad();
+console.log(searchHistory);

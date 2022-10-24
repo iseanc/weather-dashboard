@@ -23,11 +23,15 @@
         <p>Enter city name, state code, country code</p>
         <form id="city-form" class="card-body">
           <label class="form-label" for="city-name"></label>
-          <input name="city-name" id="city-name" type="text" autofocus="true" class="form-input" placeholder="City, state, country"/>
+          <input name="city-name" id="city-name" type="text" autofocus="true" class="form-input" placeholder="City, state, country" required/>
           <button type="submit" class="btn button is-primary is-small" id="search-button">Search</button>
         </form>
       </div>
-      <div id="search-history"></div>
+      <div id="search-history">
+        <ul id="search-history-list">
+          
+        </ul>
+      </div>
     </div>
 
     <!-- Search Results -->
