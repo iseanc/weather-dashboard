@@ -7,6 +7,7 @@ var searchHistoryEl = document.getElementById("search-history");
 var searchHistoryUl = document.getElementById("search-history-list");
 var searchResultsEl = document.getElementById("search-results");
 var searchResultsMainEl = document.getElementById("results-main");
+var searchHistoryLinks = document.getElementsByClassName('search-hist-item');
 
 // JS variables
 var DateTime = luxon.DateTime;
@@ -34,8 +35,6 @@ var count = 40;
 var searchHistory = []; // search history array for temp storage
 var searchResults; // temp storage for weather search results
 var weatherSubset;
-// var weatherIcon;
-// var weatherIconUrl =
 //   "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
 
 // *******************************
@@ -63,7 +62,6 @@ function getCoordinates(gcr) {
       "Fetching coordinates did not return valid latitude or longitude.\n Enter a valid City Name.  Include State Code and Country Code to limit search response to a single result."
     );
   } else {
-    console.log("gcr: getCoordinates", gcr);
     // log City info to search history
     updateSearchHistory(gcr);
     lat = gcr[0].lat;
@@ -152,6 +150,8 @@ function updateSearchHistory(gcr) {
         country: gcr[0].country, 
         lat: gcr[0].lat, 
         lon: gcr[0].lon});
+    searchHistory.reverse();
+    
     console.log("searchHist", searchHistory);
     localStorage.setItem("weatherSearchHistory", JSON.stringify(searchHistory));
   }
@@ -246,8 +246,9 @@ function loadSearchHistory() {
 }
 
 function onPageLoad() {
-  loadSearchHistory()
-  displaySearchHistory()
+  loadSearchHistory();
+  //updateSearchHistory();
+  displaySearchHistory();
 }
 
 function parseSearchText(searchString) {
@@ -276,6 +277,8 @@ function parseSearchText(searchString) {
   fetchCoordinatesFromCity(directGeocodeUrl);
 }
 
+onPageLoad();
+
 // EVENT LISTENERS
 
 searchButtonEl.addEventListener("click", function (event) {
@@ -293,4 +296,26 @@ searchButtonEl.addEventListener("click", function (event) {
 
 });
 
-onPageLoad();
+searchHistoryUl.addEventListener("click", function (event) {
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  var element = event.target;
+  console.log(element);
+
+  if(element && element.nodeName == "LI") {
+    // console.log(element.dataset.index + " was clicked");
+    lat = element.dataset.lat;
+    lon = element.dataset.lon;
+
+    var requestUrl =
+      "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat
+       + "&lon=" + lon 
+       + "&appid=" + openWeatherAPIKey 
+       + "&units=" + units 
+       + "&cnt=" + count;
+    // call fetchWeather
+    fetchWeather(requestUrl);
+  }
+});
